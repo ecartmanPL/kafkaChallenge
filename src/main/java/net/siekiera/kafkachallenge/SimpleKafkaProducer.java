@@ -1,18 +1,15 @@
 package net.siekiera.kafkachallenge;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
-
-import java.util.Properties;
 
 /**
  * Created by W. Siekiera on 11.01.2018
  */
 public class SimpleKafkaProducer {
-    private Producer<String, String> producer;
+    private KafkaProducer<String, String> producer;
 
-    public void setProducer(Producer<String, String> producer) {
+    public void setProducer(KafkaProducer<String, String> producer) {
         this.producer = producer;
     }
 

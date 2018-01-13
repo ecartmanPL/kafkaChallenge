@@ -24,11 +24,11 @@ public class SimpleKafkaProducerConfig {
         props.put("batch.size", 16384);
         props.put("linger.ms", 1);
         props.put("buffer.memory", 33554432);
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("key.serializer", "org.apache.kafka.common.serialization.IntegerSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
         SimpleKafkaProducer simpleKafkaProducer = new SimpleKafkaProducer();
-        simpleKafkaProducer.setProducer(new KafkaProducer<String, String>(props));
+        simpleKafkaProducer.setProducer(new KafkaProducer<>(props));
         return simpleKafkaProducer;
     }
 }
