@@ -36,31 +36,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class SpringKafkaSenderTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SpringKafkaSenderTest.class);
-
-    private static String SENDER_TOPIC = "sender.t";
+    private KafkaMessageListenerContainer<String, String> container;
+    private BlockingQueue<ConsumerRecord<String, String>> records;
 
     @Autowired
     private SimpleKafkaProducer sender;
-
-    private KafkaMessageListenerContainer<String, String> container;
-
-    private BlockingQueue<ConsumerRecord<String, String>> records;
-
-    @ClassRule
-    public static KafkaEmbedded embeddedKafka = new KafkaEmbedded(1, true, SENDER_TOPIC);
 
     @Before
     public void setUp() throws Exception {
         // set up the Kafka consumer properties
         Map<String, Object> consumerProperties =
-                KafkaTestUtils.consumerProps("sender", "false", embeddedKafka);
+                KafkaTestUtils.consumerProps("sender", "false", AllKafkaTests.embeddedKafka);
 
         // create a Kafka consumer factory
         DefaultKafkaConsumerFactory<String, String> consumerFactory =
                 new DefaultKafkaConsumerFactory<String, String>(consumerProperties);
 
         // set the topic that needs to be consumed
-        ContainerProperties containerProperties = new ContainerProperties(SENDER_TOPIC);
+        ContainerProperties containerProperties = new ContainerProperties(AllKafkaTests.SENDER_TOPIC);
 
         // create a Kafka MessageListenerContainer
         container = new KafkaMessageListenerContainer<>(consumerFactory, containerProperties);
@@ -81,7 +74,7 @@ public class SpringKafkaSenderTest {
         container.start();
 
         // wait until the container has the required number of assigned partitions
-        ContainerTestUtils.waitForAssignment(container, embeddedKafka.getPartitionsPerTopic());
+        ContainerTestUtils.waitForAssignment(container, AllKafkaTests.embeddedKafka.getPartitionsPerTopic());
     }
 
     @After
@@ -91,11 +84,11 @@ public class SpringKafkaSenderTest {
     }
 
     @Test
-    public void testSend() throws InterruptedException {
+    public void singleMessageSenderTest() throws InterruptedException {
         // send the message
         String greeting = "Hello Spring Kafka Sender!";
         //sender.send(SENDER_TOPIC, greeting);
-        sender.produce(SENDER_TOPIC, null, greeting);
+        sender.produce(AllKafkaTests.SENDER_TOPIC, null, greeting);
         // check that the message was received
         ConsumerRecord<String, String> received = records.poll(10, TimeUnit.SECONDS);
         // Hamcrest Matchers to check the value

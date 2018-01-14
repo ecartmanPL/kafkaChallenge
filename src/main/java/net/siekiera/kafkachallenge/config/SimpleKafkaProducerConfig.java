@@ -1,5 +1,6 @@
-package net.siekiera.kafkachallenge;
+package net.siekiera.kafkachallenge.config;
 
+import net.siekiera.kafkachallenge.SimpleKafkaProducer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
